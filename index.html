@@ -526,18 +526,11 @@
             margin-bottom: 0.5rem;
         }
         /* Visitor Counter Styles */
-        #freeCounter {
+        .visitor-counter {
             margin-top: 20px;
             text-align: center;
-            font-size: 1.2rem; /* Slightly larger text */
-        }
-        #freeCounter a {
-            color: #FF8200; /* Match the accent color */
-            text-decoration: none;
-            font-weight: bold;
-        }
-        #freeCounter a:hover {
-            text-decoration: underline;
+            font-size: 1.2rem;
+            color: white;
         }
         @media (max-width: 1024px) {
             .container {
@@ -591,9 +584,6 @@
                 font-size: 0.9rem;
                 padding: 8px 12px;
             }
-            #freeCounter {
-                font-size: 1rem; /* Adjust size for smaller screens */
-            }
         }
         @media (max-width: 480px) {
             .nav-button {
@@ -615,9 +605,6 @@
                 font-size: 1.1rem;
                 margin-top: 45px;
                 padding: 0.5rem;
-            }
-            #freeCounter {
-                font-size: 0.9rem; /* Further adjust for very small screens */
             }
         }
     </style>
@@ -737,14 +724,61 @@
     </div>
     <footer>
         <p>Academic Literacy - Theme 2: Corruption</p>
-        <!-- Embedded Visitor Counter -->
-        <div id="freeCounter">
-            <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=98eaca31612f4331b0b8acd08eb43e530eb44597'></script>
-            <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1386787/t/5"></script>
-            <br>
-            <a href='https://www.free-counters.org/'>... by Free-Counters.org</a>
+        <!-- New Visitor Counter -->
+        <div class="visitor-counter">
+            Visitors: <span id="visitor-count">0</span>
         </div>
-        <!-- End of Visitor Counter -->
+        <script>
+        (function() {
+          const domain = encodeURIComponent(window.location.hostname);
+          const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const page_path = window.location.pathname;
+          const page_title = document.title;
+          const referrer = document.referrer;
+          
+          // Extract search query if coming from a search engine
+          let search_query = '';
+          if (referrer) {
+            try {
+              const url = new URL(referrer);
+              if (url.hostname.includes('google.com')) {
+                search_query = url.searchParams.get('q') || '';
+              } else if (url.hostname.includes('bing.com')) {
+                search_query = url.searchParams.get('q') || '';
+              } else if (url.hostname.includes('yahoo.com')) {
+                search_query = url.searchParams.get('p') || '';
+              } else if (url.hostname.includes('duckduckgo.com')) {
+                search_query = url.searchParams.get('q') || '';
+              }
+            } catch (e) {
+              // Invalid URL, ignore
+            }
+          }
+
+          fetch('https://visitor.6developer.com/visit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              domain, 
+              timezone,
+              page_path,
+              page_title,
+              referrer,
+              search_query
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Visitor count:', data);
+            // Display the count on your page
+            if (document.getElementById('visitor-count')) {
+              document.getElementById('visitor-count').textContent = data.totalCount;
+            }
+          })
+          .catch(error => console.error('Error:', error));
+        })();
+        </script>
+        <!-- End of New Visitor Counter -->
     </footer>
     <script>
         let currentTab = 'session-outcomes';
